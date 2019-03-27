@@ -48,15 +48,15 @@ function start() {
                 console.log(chalk.green.bold("Take a look at the current inventory below. Select the product name and input the restock amount to update store Inventory."))
                 console.log(chalk.magentaBright.bold(border));
                 addToInventory()
-               
+
 
             }
             if (res.managerDisplay === "Add New Product") {
-
+                addNewProduct()
             }
             if (res.managerDisplay === "Exit") {
                 console.log(chalk.magentaBright.bold(border));
-                console.log(chalk.green.bold("Goodbye, and have a nice day!"))
+                console.log(chalk.green.bold("Goodbye, have a nice day!"))
                 console.log(chalk.magentaBright.bold(border));
             }
         })
@@ -76,9 +76,7 @@ function showProductsInStore() {
             );
         }
         console.log(chalk.bgGreenBright(table.toString()))
-
     })
-
 }
 
 function showLowInventory() {
@@ -150,7 +148,7 @@ function quantityToAdd() {
                                 ],
                                 function (err, res) {
                                     showProductsInStore()
-                                    
+
                                 })
                         })
                 });
@@ -158,6 +156,56 @@ function quantityToAdd() {
 }
 
 function addNewProduct() {
+    inquirer
+        .prompt([
+            {
+                name: "name",
+                type: "input",
+                message: "Name of product: "
+            },
+            {
+                name: "department",
+                type: "input",
+                message: "Department product belongs to: "
+            },
+            {
+                name: "price",
+                type: "input",
+                message: "Price of product: "
+            },
+            {
+                name: "quantity",
+                type: "input",
+                message: "Quantity of product available for sale: "
+            }
+
+        ])
+        .then(function(newItem){
+            var query = "INSERT INTO products (id, product_name, department_name, price, stock_quantity) VALUES (?, ?, ?, ?, ?)";
+                    connection.query(query,
+                        {
+                            id: 11
+                        },
+                        {
+                            product_name: newItem.name
+                        },
+                        {
+                            department_name: newItem.department
+                        },
+                        {
+                            price: newItem.price
+                        },
+                        {
+                            stock_quantity: newItem.quantity
+                        },
+                        function(err, res){
+                         
+                            
+                            
+                        }
+                        
+                    )
+        })
 
 }
 
