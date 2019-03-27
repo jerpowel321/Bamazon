@@ -20,7 +20,7 @@ connection.connect(function (err) {
     // runing the start function after the connection is made to prompt the user
     start();
 });
-
+var border = "****************************************************************************************************"
 function start() {
 
     inquirer
@@ -28,35 +28,37 @@ function start() {
             name: "managerDisplay",
             type: "list",
             message: "What would you like to do?",
-            choices: ["View Products for Sale", "View Low Inventory", "Add to Inventory", "Add New Product"]
+            choices: ["View Products for Sale", "View Low Inventory", "Add to Inventory", "Add New Product", "Exit"]
         })
         .then(function (res) {
             if (res.managerDisplay === "View Products for Sale") {
-                console.log("The table below displays the available products in the store.")
+                console.log(chalk.magentaBright.bold(border));
+                console.log(chalk.green.bold("The table below displays the available products in the store."))
+                console.log(chalk.magentaBright.bold(border));
                 showProductsInStore()
             }
             if (res.managerDisplay === "View Low Inventory") {
-                console.log("The table below displays the products with low inventory (less than 20) in the store.")
+                console.log(chalk.magentaBright.bold(border));
+                console.log(chalk.green.bold("The table below displays the products with low inventory (less than 20) in the store."))
+                console.log(chalk.magentaBright.bold(border));
                 showLowInventory()
             }
             if (res.managerDisplay === "Add to Inventory") {
+                console.log(chalk.magentaBright.bold(border));
+                console.log(chalk.green.bold("Take a look at the current inventory below. Select the product name and input the restock amount to update store Inventory."))
+                console.log(chalk.magentaBright.bold(border));
+                addToInventory()
+               
 
             }
             if (res.managerDisplay === "Add New Product") {
 
             }
-            // var productName = product.buyProduct
-            // inquirer
-            //     .prompt({
-            //         name: "buyQuantity",
-            //         type: "input",
-            //         message: "How many would you like to buy?"
-            //     })
-            //     .then(function (quantity) {
-            //         var query = "SELECT stock_quantity FROM products WHERE product_name = ?";
-            //         connection.query(query,
-            //             productName
-            //             ,
+            if (res.managerDisplay === "Exit") {
+                console.log(chalk.magentaBright.bold(border));
+                console.log(chalk.green.bold("Goodbye, and have a nice day!"))
+                console.log(chalk.magentaBright.bold(border));
+            }
         })
 }
 
@@ -74,8 +76,9 @@ function showProductsInStore() {
             );
         }
         console.log(chalk.bgGreenBright(table.toString()))
+
     })
-    start()
+
 }
 
 function showLowInventory() {
@@ -91,6 +94,70 @@ function showLowInventory() {
             );
         }
         console.log(chalk.bgGreenBright(table.toString()))
+        start()
     });
-    start()
 }
+
+var productsArray = []
+function addToInventory() {
+    showProductsInStore()
+    var query = "SELECT product_name FROM products";
+    connection.query(query, function (err, res) {
+        for (var i = 0; i < res.length; i++) {
+            productsArray.push(res[i].product_name)
+        }
+        quantityToAdd()
+    })
+}
+
+function quantityToAdd() {
+    inquirer
+        .prompt({
+            name: "productName",
+            type: "list",
+            message: "Which product would you like to update?",
+            choices: productsArray
+        })
+        .then(function (product) {
+            var productName = product.productName
+            inquirer
+                .prompt({
+                    name: "addQuantity",
+                    type: "input",
+                    message: "Restock Quantity?"
+
+                })
+                .then(function (quantity) {
+                    var query = "SELECT stock_quantity FROM products WHERE product_name = ?";
+                    connection.query(query,
+                        productName
+                        ,
+                        function (err, res) {
+                            var updatedQuantity = res[0].stock_quantity + parseFloat(quantity.addQuantity)
+                            console.log(chalk.magentaBright.bold(border));
+                            console.log(chalk.green.bold("There was " + res[0].stock_quantity + " " + productName + " in Inventory."));
+                            console.log(chalk.green.bold("You have added " + parseFloat(quantity.addQuantity) + " " + productName + " to Inventory."))
+                            console.log(chalk.green.bold("Total " + productName + " in inventory is now " + updatedQuantity + "."))
+                            console.log(chalk.magentaBright.bold(border));
+                            var query = "UPDATE products SET ? WHERE ?";
+                            connection.query(query,
+                                [{
+                                    stock_quantity: updatedQuantity
+                                },
+                                {
+                                    product_name: productName
+                                }
+                                ],
+                                function (err, res) {
+                                    showProductsInStore()
+                                    
+                                })
+                        })
+                });
+        })
+}
+
+function addNewProduct() {
+
+}
+
