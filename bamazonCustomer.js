@@ -6,13 +6,10 @@ var chalk = require('chalk');
 // create the connection information for the sql database
 var connection = mysql.createConnection({
     host: "localhost",
-
     //port
     port: 3306,
-
     //username
     user: "root",
-
     //password
     password: "password",
     database: "bamazon_DB"
@@ -102,8 +99,6 @@ function askQuestions() {
                                         }
                                     )
                                 })
-
-
                                 start()
                             }
                             else {
