@@ -19,31 +19,31 @@ CREATE TABLE products(
 );
 
 INSERT INTO products (id, product_name, department_name, price, stock_quantity)
-VALUES  (1, "Mighty Sword", "Weapon", 100, 3);
+VALUES  (1, "Mighty Sword", "Weapon", 100, 27);
 
 INSERT INTO products (id, product_name, department_name, price, stock_quantity)
-VALUES (2, "Wicked Boots", "FootWear", 50, 7);
+VALUES (2, "Wicked Boots", "FootWear", 50, 10);
 
 INSERT INTO products (id, product_name, department_name, price, stock_quantity)
-VALUES (3, "Leagendary Ring", "Jewlery", 700, 5);
+VALUES (3, "Leagendary Ring", "Jewlery", 700, 50);
 
 INSERT INTO products (id, product_name, department_name, price, stock_quantity)
-VALUES (4, "Singing Dagger", "Weapon", 250, 10);
+VALUES (4, "Singing Dagger", "Weapon", 250, 12);
 
 INSERT INTO products (id, product_name, department_name, price, stock_quantity)
-VALUES (5, "Panicky Sneakers", "FootWear", 75, 15);
+VALUES (5, "Panicky Sneakers", "FootWear", 75, 36);
 
 INSERT INTO products (id, product_name, department_name, price, stock_quantity)
 VALUES (6, "Itchy Helmet", "HeadWear", 5, 100);
 
 INSERT INTO products (id, product_name, department_name, price, stock_quantity)
-VALUES (7, "Quaint Crown", "HeadWear", 900, 2);
+VALUES (7, "Quaint Crown", "HeadWear", 900, 10);
 
 INSERT INTO products (id, product_name, department_name, price, stock_quantity)
-VALUES (8, "Blinding Neckalace", "Jewlery", 1200, 4);
+VALUES (8, "Blinding Neckalace", "Jewlery", 1200, 15);
 
 INSERT INTO products (id, product_name, department_name, price, stock_quantity)
-VALUES (9, "Obedient Wand", "Weapon", 2400, 15);
+VALUES (9, "Obedient Wand", "Weapon", 2400, 40);
 
 INSERT INTO products (id, product_name, department_name, price, stock_quantity)
-VALUES (10, "Victorious Shield", "Armour", 600, 7);
+VALUES (10, "Victorious Shield", "Armour", 600, 8);
