@@ -56,7 +56,7 @@ function start() {
             }
             if (res.managerDisplay === "Exit") {
                 console.log(chalk.magentaBright.bold(border));
-                console.log(chalk.green.bold("Goodbye, have a nice day!"))
+                console.log(chalk.green.bold("Goodbye, have a nice day! :)"))
                 console.log(chalk.magentaBright.bold(border));
             }
         })
