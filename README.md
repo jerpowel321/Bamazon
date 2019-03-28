@@ -5,7 +5,7 @@
 #### Here you will find the latest fashion for cheap prices!
 #### My app has two displays, one for customers and one for managers. 
 
-## For Customers
+### For Customers
 
 #### At the start of my webpage, you will see a prompt on the screen displaying two messages:
 
@@ -24,7 +24,7 @@ The store SQL database is then updated to reflect the remaining quantity and the
 #### See demo below of how a customer places an order and how the Store Database is updated to reflect that order.
 <img src="" width="500">
 
-## For Managers
+### For Managers
 
 #### At the start of my webpage, you will see a prompt on the screen displaying possible actions:
 
@@ -35,42 +35,27 @@ The store SQL database is then updated to reflect the remaining quantity and the
 5) Exit
 
 ### See what each of the following commands does:
-1) On the first command, <b>View Products for Sale</b>
-    - The user is prompted *"Name an artist you'd like to see in concert :)"*
+1) Upon selecting, <b>View Products for Sale</b>
+    - The user is prompted 
+
+2) Upon selecting, <b>View Low Inventory</b>
+
+3) Upon selecting, <b>Add to Inventory</b>
    
-    
-#### See Demo of first command:
-<img src="" width="500">
+4) Upon selecting, <b>Add New Product</b>
 
-2) On the second command, <b>View Low Inventory</b>
-    
-
-#### See Demo of second command:
-<img src="" width="500">
-
-3) On the third command, <b>Add to Inventory</b>
-   
-
-#### See Demo of third command:
-<img src="" width="500">
-
-4) On the fourth command, <b>Add New Product</b>
- 
-
-#### See Demo of fourth command:
-<img src="" width="500">
-
-5) On the fith command, <b>Exit</b>
+5) Upon selecting <b>Exit</b>
     - You will exit out of the store and receive the following message: 
     *"Goodbye, have a nice day! :)"*
 
 ## Built With
 - JavaScript
-- Node packages
-    * mysql
-    * inquirer
-    * cli-table2
-    * chalk
+- mySQL
+- NPM packages
+    * mySQL
+    * Inquirer
+    * Cli-table2
+    * Chalk
 
 ## Authors
 Jennifer Powell 

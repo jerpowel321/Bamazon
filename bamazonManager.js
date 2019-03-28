@@ -22,20 +22,19 @@ connection.connect(function (err) {
 });
 var border = "****************************************************************************************************"
 function start() {
-
     inquirer
         .prompt({
             name: "managerDisplay",
             type: "list",
             message: "What would you like to do?",
-            choices: ["View Products for Sale", "View Low Inventory", "Add to Inventory", "Add New Product", "Exit"]
+            choices: ["View Products for Sale", "View Low Inventory", "Add to Inventory", "Add New Product", "Remove Product", "Exit"]
         })
         .then(function (res) {
             if (res.managerDisplay === "View Products for Sale") {
                 console.log(chalk.magentaBright.bold(border));
                 console.log(chalk.green.bold("The table below displays the available products in the store."))
                 console.log(chalk.magentaBright.bold(border));
-                showProductsInStore()
+                showProductsInStore(true)
             }
             if (res.managerDisplay === "View Low Inventory") {
                 console.log(chalk.magentaBright.bold(border));
@@ -48,22 +47,24 @@ function start() {
                 console.log(chalk.green.bold("Take a look at the current inventory below. Select the product name and input the restock amount to update store Inventory."))
                 console.log(chalk.magentaBright.bold(border));
                 addToInventory()
-
-
             }
             if (res.managerDisplay === "Add New Product") {
                 addNewProduct()
+            }
+            if (res.managerDisplay === "Remove Product") {
+                removeFromInventory()
             }
             if (res.managerDisplay === "Exit") {
                 console.log(chalk.magentaBright.bold(border));
                 console.log(chalk.green.bold("Goodbye, have a nice day! :)"))
                 console.log(chalk.magentaBright.bold(border));
+                connection.end();
             }
         })
 }
 
 
-function showProductsInStore() {
+function showProductsInStore(restart) {
     var query = "SELECT * FROM products";
     connection.query(query, function (err, res) {
         var table = new Table({
@@ -76,6 +77,9 @@ function showProductsInStore() {
             );
         }
         console.log(chalk.bgGreenBright(table.toString()))
+        if (restart) {
+            start();
+        }
     })
 }
 
@@ -98,7 +102,7 @@ function showLowInventory() {
 
 var productsArray = []
 function addToInventory() {
-    showProductsInStore()
+    showProductsInStore(false)
     var query = "SELECT product_name FROM products";
     connection.query(query, function (err, res) {
         for (var i = 0; i < res.length; i++) {
@@ -110,49 +114,47 @@ function addToInventory() {
 
 function quantityToAdd() {
     inquirer
-        .prompt({
+        .prompt([{
             name: "productName",
             type: "list",
             message: "Which product would you like to update?",
             choices: productsArray
-        })
+        },
+        {
+            name: "addQuantity",
+            type: "input",
+            message: "Restock Quantity?"
+        }])
         .then(function (product) {
-            var productName = product.productName
-            inquirer
-                .prompt({
-                    name: "addQuantity",
-                    type: "input",
-                    message: "Restock Quantity?"
+            var productName = product.productName;
+            var productQuanity = product.addQuantity;
 
-                })
-                .then(function (quantity) {
-                    var query = "SELECT stock_quantity FROM products WHERE product_name = ?";
+            var query = "SELECT stock_quantity FROM products WHERE product_name = ?";
+            connection.query(query,
+                productName
+                ,
+                function (err, res) {
+                    var updatedQuantity = res[0].stock_quantity + parseFloat(productQuanity)
+                    console.log(chalk.magentaBright.bold(border));
+                    console.log(chalk.green.bold("There was " + res[0].stock_quantity + " " + productName + " in Inventory."));
+                    console.log(chalk.green.bold("You have added " + parseFloat(productQuanity) + " " + productName + " to Inventory."))
+                    console.log(chalk.green.bold("Total " + productName + " in inventory is now " + updatedQuantity + "."))
+                    console.log(chalk.magentaBright.bold(border));
+                    var query = "UPDATE products SET ? WHERE ?";
                     connection.query(query,
-                        productName
-                        ,
+                        [{
+                            stock_quantity: updatedQuantity
+                        },
+                        {
+                            product_name: productName
+                        }
+                        ],
                         function (err, res) {
-                            var updatedQuantity = res[0].stock_quantity + parseFloat(quantity.addQuantity)
-                            console.log(chalk.magentaBright.bold(border));
-                            console.log(chalk.green.bold("There was " + res[0].stock_quantity + " " + productName + " in Inventory."));
-                            console.log(chalk.green.bold("You have added " + parseFloat(quantity.addQuantity) + " " + productName + " to Inventory."))
-                            console.log(chalk.green.bold("Total " + productName + " in inventory is now " + updatedQuantity + "."))
-                            console.log(chalk.magentaBright.bold(border));
-                            var query = "UPDATE products SET ? WHERE ?";
-                            connection.query(query,
-                                [{
-                                    stock_quantity: updatedQuantity
-                                },
-                                {
-                                    product_name: productName
-                                }
-                                ],
-                                function (err, res) {
-                                    showProductsInStore()
+                            start()
 
-                                })
                         })
-                });
-        })
+                })
+        });
 }
 
 function addNewProduct() {
@@ -180,32 +182,51 @@ function addNewProduct() {
             }
 
         ])
-        .then(function(newItem){
-            var query = "INSERT INTO products (id, product_name, department_name, price, stock_quantity) VALUES (?, ?, ?, ?, ?)";
-                    connection.query(query,
-                        {
-                            id: 11
-                        },
-                        {
-                            product_name: newItem.name
-                        },
-                        {
-                            department_name: newItem.department
-                        },
-                        {
-                            price: newItem.price
-                        },
-                        {
-                            stock_quantity: newItem.quantity
-                        },
-                        function(err, res){
-                         
-                            
-                            
-                        }
-                        
-                    )
+        .then(function (newItem) {
+            var query = "INSERT INTO products (product_name, department_name, price, stock_quantity) VALUES ?";
+            connection.query(query, [[
+                [newItem.name, newItem.department, parseFloat(newItem.price), parseFloat(newItem.quantity)]]
+            ],
+                function (err, res) {
+                    showProductsInStore(true)
+                }
+
+            )
         })
 
 }
+var productsArray2 = []
+function removeFromInventory() {
+    showProductsInStore(false)
+    var query = "SELECT product_name FROM products";
+    connection.query(query, function (err, res) {
+        for (var i = 0; i < res.length; i++) {
+            productsArray2.push(res[i].product_name)
+        }
+        removeProduct()
+    })
+}
+function removeProduct() {
+    inquirer
+        .prompt(
+            {
+                name: "name",
+                type: "list",
+                message: "What product would you like to remove?",
+                choices: productsArray2
+            }
+        )
+        .then(function (removeItem) {
+            var query = "DELETE FROM products WHERE product_name = ?";
+            connection.query(query, [[
+                [removeItem.name]]
+            ],
+                function (err, res) {
+                    console.log(res)
+                    showProductsInStore(true)
+                }
 
+            )
+        })
+
+}
