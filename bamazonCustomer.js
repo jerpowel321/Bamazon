@@ -57,64 +57,59 @@ function takingClientOrder() {
 
 function askQuestions() {
     inquirer
-        .prompt({
+        .prompt([{
             name: "buyProduct",
             type: "list",
             message: "What product would you like to buy?",
             choices: productsArray
-        })
-        .then(function (product) {
-            var productName = product.buyProduct
-            inquirer
-                .prompt({
-                    name: "buyQuantity",
-                    type: "input",
-                    message: "How many would you like to buy?"
-                })
-                .then(function (quantity) {
-                    var query = "SELECT stock_quantity FROM products WHERE product_name = ?";
-                    connection.query(query,
-                        productName
-                        ,
-                        function (err, res) {
-                            if (quantity.buyQuantity <= res[0].stock_quantity) {
-                                displayBorder()
-                                console.log(chalk.green.bold("Amazing! You have purchased " + quantity.buyQuantity + " items and are now a proud owner of the " + productName + " :)"))
-                                var query = "SELECT price FROM products WHERE product_name = ?";
-                                connection.query(query, productName, function (err, res) {
-                                    var price = res[0].price
-                                    var totalCost = quantity.buyQuantity * price
-                                    console.log(chalk.green.bold("The Total Cost of your purchase was $" + totalCost + "."))
-                                    console.log(chalk.green.bold("See our updated Store Directory below to help with your next purchase!"))
-                                    displayBorder()
-                                    var newQuantity = res[0].stock_quantity - quantity.buyQuantity
-                                    var query = connection.query(
-                                        "UPDATE products SET ? WHERE ?",
-                                        [
-                                            {
-                                                stock_quantity: newQuantity
-                                            },
-                                            {
-                                                product_name: productName
-                                            }
-                                        ],
-                                        function (err, res) {
-                                        }
-                                    )
-                                })
-                                start()
+        },
+        {
+            name: "buyQuantity",
+            type: "input",
+            message: "How many would you like to buy?"
+        }
+        ])
+        .then(function (res) {
+            var productName = res.buyProduct
+            var quantity = res.buyQuantity
+            var query = "SELECT stock_quantity, price FROM products WHERE product_name = ?";
+            connection.query(query,
+                productName,
+                function (err, res) {
+                    if (quantity <= res[0].stock_quantity) {
+                        var price = res[0].price
+                        var totalCost = quantity * price
+                        displayBorder()
+                        console.log(chalk.green.bold("Amazing! You have purchased " + quantity + " items and are now a proud owner of the " + productName + " :)"))
+                        console.log(chalk.green.bold("The Total Cost of your purchase was $" + totalCost + "."))
+                        console.log(chalk.green.bold("See our updated Store Directory below to help with your next purchase!"))
+                        displayBorder()
+                        var newQuantity = res[0].stock_quantity - quantity
+                        var query = connection.query(
+                            "UPDATE products SET ? WHERE ?",
+                            [
+                                {
+                                    stock_quantity: newQuantity
+                                },
+                                {
+                                    product_name: productName
+                                }
+                            ],
+                            function (err, res) {
                             }
-                            else {
-                                console.log(chalk.green.bold("Insufficent Quantity! Try again :( "));
-                                displayBorder()
-                                takingClientOrder()
-                            }
-                        })
+                        )
+
+                        start()
+                    }
+                    else {
+                        console.log(chalk.green.bold("Insufficent Quantity! Try again :( "));
+                        displayBorder()
+                        takingClientOrder()
+                    }
                 })
         })
 }
 
-
-function displayBorder(){
+function displayBorder() {
     console.log(chalk.magentaBright.bold("****************************************************************************************************"));
 }
