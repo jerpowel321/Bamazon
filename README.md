@@ -43,7 +43,7 @@ The store SQL database is then updated to reflect the remaining quantity and the
 
 #### See demo below of how a manager can view, add, remove and restock products in the store.  
 <img src="https://media.giphy.com/media/cmynL8Afrg6pdpv8MY/giphy.gif" width="500">
-<img src="https://media.giphy.com/media/QmFkxcdd9orhlKZ7Dn/giphy.gif" width="500">
+<img src="https://media.giphy.com/media/mxSYpbCWQFQAMh9oOU/giphy.gif" width="500">
 
 ## Deployed Site
 Use this link to see the deployed site: https://jerpowel321.github.io/Bamazon/
