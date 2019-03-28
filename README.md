@@ -45,9 +45,6 @@ The store SQL database is then updated to reflect the remaining quantity and the
 <img src="https://media.giphy.com/media/cmynL8Afrg6pdpv8MY/giphy.gif" width="500">
 <img src="https://media.giphy.com/media/mxSYpbCWQFQAMh9oOU/giphy.gif" width="500">
 
-## Deployed Site
-Use this link to see the deployed site: https://jerpowel321.github.io/Bamazon/
-
 ## Built With
 - JavaScript
 - mySQL
