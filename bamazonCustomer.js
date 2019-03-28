@@ -78,7 +78,7 @@ function askQuestions() {
                         ,
                         function (err, res) {
                             if (quantity.buyQuantity <= res[0].stock_quantity) {
-                                console.log(chalk.magentaBright.bold("****************************************************************************************************"));
+                                displayBorder()
                                 console.log(chalk.green.bold("Amazing! You have purchased " + quantity.buyQuantity + " items and are now a proud owner of the " + productName + " :)"))
                                 var query = "SELECT price FROM products WHERE product_name = ?";
                                 connection.query(query, productName, function (err, res) {
@@ -86,7 +86,7 @@ function askQuestions() {
                                     var totalCost = quantity.buyQuantity * price
                                     console.log(chalk.green.bold("The Total Cost of your purchase was $" + totalCost + "."))
                                     console.log(chalk.green.bold("See our updated Store Directory below to help with your next purchase!"))
-                                    console.log(chalk.magentaBright.bold("****************************************************************************************************"));
+                                    displayBorder()
                                     var newQuantity = res[0].stock_quantity - quantity.buyQuantity
                                     var query = connection.query(
                                         "UPDATE products SET ? WHERE ?",
@@ -102,13 +102,11 @@ function askQuestions() {
                                         }
                                     )
                                 })
-                                
-
                                 start()
                             }
                             else {
                                 console.log(chalk.green.bold("Insufficent Quantity! Try again :( "));
-                                console.log(chalk.magentaBright.bold("****************************************************************************************************"));
+                                displayBorder()
                                 takingClientOrder()
                             }
                         })
@@ -117,3 +115,6 @@ function askQuestions() {
 }
 
 
+function displayBorder(){
+    console.log(chalk.magentaBright.bold("****************************************************************************************************"));
+}
